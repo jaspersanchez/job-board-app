@@ -41,3 +41,45 @@ export const applyToJob = async (req: AuthRequest, res: Response) => {
 
   res.status(201).json(application);
 };
+
+export const getApplicationsForJob = async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  const employer = req.user?._id!;
+  const job = await JobModel.findById(req.params.jobId);
+
+  if (!job) {
+    res.status(404).json({ message: "Job not found" });
+    return;
+  }
+
+  if (job.employer.toString() !== employer._id.toString()) {
+    res.status(403).json({ message: "Not your job listing" });
+    return;
+  }
+
+  const applications = await ApplicationModel.find({
+    job: job._id,
+  })
+    .populate("applicant", "name email")
+    .sort({ createdAt: -1 }); // replace applicant field to name email
+
+  res.json(applications);
+};
+
+export const updateStatus = async (req: AuthRequest, res: Response) => {
+  const { status } = req.body;
+  const application = await ApplicationModel.findByIdAndUpdate(
+    req.params.id,
+    { status },
+    { returnDocument: "after" },
+  );
+
+  if (!application) {
+    res.status(404).json({ message: "Application not found" });
+    return;
+  }
+
+  res.json(application);
+};
