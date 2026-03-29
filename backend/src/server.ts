@@ -3,9 +3,11 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import { env } from "./utils/env";
 import connectDB from "./config/db";
+import morgan from "morgan";
+
 import authRoutes from "./routes/auth.routes";
 import jobRoutes from "./routes/job.routes";
-import morgan from "morgan";
+import applicationRoutes from "./routes/application.routes";
 
 const port = env.port;
 
@@ -24,6 +26,7 @@ app.get("/api/health", (req: Request, res: Response) => {
 // define routes
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
+app.use("/api/applications", applicationRoutes);
 
 // run server
 (async () => {
