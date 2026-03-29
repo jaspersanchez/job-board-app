@@ -11,7 +11,6 @@ export interface IUser extends mongoose.Document {
   matchPassword: (entered: string) => Promise<boolean>;
 }
 
-// TODO: CONTINUE ON THE USER SCHEMA
 const userSchema = new mongoose.Schema<IUser>(
   {
     name: { type: String, required: true },
@@ -31,9 +30,12 @@ userSchema.pre("save", async function () {
 });
 
 // match user password with entered password
-userSchema.methods.matchPassword(async function (this: IUser, entered: string) {
+userSchema.methods.matchPassword = async function (
+  this: IUser,
+  entered: string,
+) {
   return bcrypt.compare(entered, this.password);
-});
+};
 
 const UserModel = mongoose.model<IUser>("User", userSchema);
 export default UserModel;

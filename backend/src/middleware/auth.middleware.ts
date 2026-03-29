@@ -4,12 +4,16 @@ import jwt from "jsonwebtoken";
 import { env } from "../utils/env";
 
 // Extend request and add user
-interface AuthRequest extends Request {
+export interface AuthRequest extends Request {
   user?: IUser;
 }
 
 // define protect funct
-const protect = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const protect = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   // get auth header
   const authHeader = req.headers.authorization;
 
